@@ -30,14 +30,14 @@ class LoveGot extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FutureBuilder<bool>(
-        future: AuthService().hasToken(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasData == true) {
+          if (snapshot.hasData) {
             return const HomeScreen();
           }
 

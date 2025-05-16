@@ -39,7 +39,7 @@ class AuthService {
   // 토큰 존재 여부 확인
   Future<bool> hasToken() async {
     final token = await getToken();
-    return token != null;
+    return token != null && _auth.currentUser != null;
   }
 
   // 로그인
@@ -66,9 +66,13 @@ class AuthService {
         await saveToken(data['access_token']);
         return userCredential;
       } else {
+        // Firebase 로그인 실패 시 로그아웃
+        await _auth.signOut();
         throw Exception('로그인에 실패했습니다: ${response.body}');
       }
     } catch (e) {
+      // Firebase 로그인 실패 시 로그아웃
+      await _auth.signOut();
       throw Exception('로그인에 실패했습니다: $e');
     }
   }
